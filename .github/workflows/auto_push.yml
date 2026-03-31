@@ -1,19 +1,25 @@
 name: 每日18点推送合肥美食
 on:
   schedule:
-    - cron: '0 10 * * *'
+    - cron: "0 10 * * *"  # 北京时间18:00（UTC 10:00）
   workflow_dispatch:
 
+# 核心修复：强制使用 Node.js 24，彻底消除警告
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  run_push:
+  push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: 设置Python
-        uses: actions/setup-python@v5
+      - name: 拉取代码
+        uses: actions/checkout@v5  # 升级到支持 Node.js 24 的最新版
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v6  # 升级到支持 Node.js 24 的最新版
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+          cache: "pip"  # 优化依赖缓存，加速运行
       - name: 安装依赖
-        run: pip install requests
-      - name: 执行推送
+        run: pip install -r requirements.txt
+      - name: 执行推送脚本
         run: python send_wxpush.py

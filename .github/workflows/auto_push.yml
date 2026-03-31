@@ -1,25 +1,19 @@
-name: 每日18点微信定时推送
-
-# 定时规则：UTC时间！北京时间18点 = UTC 10点
+name: 每日18点推送合肥美食
 on:
   schedule:
     - cron: '0 10 * * *'
-  workflow_dispatch: # 支持手动点按钮立即测试运行
+  workflow_dispatch:
 
 jobs:
-  push-msg:
+  run_push:
     runs-on: ubuntu-latest
     steps:
-      - name: 拉取代码
-        uses: actions/checkout@v4
-
-      - name: 安装Python
+      - uses: actions/checkout@v4
+      - name: 设置Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-
+          python-version: '3.11'
       - name: 安装依赖
-        run: pip install -r requirements.txt
-
-      - name: 执行推送脚本
-        run: python send_msg.py
+        run: pip install requests
+      - name: 执行推送
+        run: python send_wxpush.py
